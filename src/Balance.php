@@ -7,7 +7,7 @@
 
 namespace Illuminatech\Balance;
 
-use \InvalidArgumentException;
+use InvalidArgumentException;
 use Illuminatech\Balance\Events\TransactionCreated;
 use Illuminatech\Balance\Events\CreatingTransaction;
 
@@ -33,7 +33,7 @@ abstract class Balance implements BalanceContract
      * @var string name of the transaction entity attribute, which should be used to link transaction entity with
      * account entity (store associated account ID).
      */
-    public $accountLinkAttribute = 'accountId';
+    public $accountLinkAttribute = 'account_id';
     /**
      * @var string name of the transaction entity attribute, which should store additional affected account ID.
      * This attribute will be filled only at `transfer()` method execution and will store ID of the account transferred
@@ -57,6 +57,10 @@ abstract class Balance implements BalanceContract
      * If not set PHP `time()` function will be used.
      */
     public $dateAttributeValue;
+    /**
+     * @var \Illuminate\Events\Dispatcher event dispatcher.
+     */
+    public $dispatcher;
 
 
     /**
@@ -223,9 +227,13 @@ abstract class Balance implements BalanceContract
      */
     protected function beforeCreateTransaction($accountId, $data): array
     {
+        if ($this->dispatcher === null) {
+            return $data;
+        }
+
         $event = new CreatingTransaction($accountId, $data);
 
-        $this->eventDispatcher->dispatch($event);
+        $this->dispatcher->dispatch($event);
 
         return $event->data;
     }
@@ -238,8 +246,12 @@ abstract class Balance implements BalanceContract
      */
     protected function afterCreateTransaction($transactionId, $accountId, $data)
     {
+        if ($this->dispatcher === null) {
+            return;
+        }
+
         $event = new TransactionCreated($transactionId, $accountId, $data);
 
-        $this->eventDispatcher->dispatch($event);
+        $this->dispatcher->dispatch($event);
     }
 }

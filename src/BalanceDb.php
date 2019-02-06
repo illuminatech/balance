@@ -27,7 +27,7 @@ use Illuminate\Database\Connection;
  */
 class BalanceDb extends BalanceDbTransaction
 {
-    use ManagerDataSerializeTrait;
+    use DataSerializable;
 
     /**
      * @var Connection the DB connection instance.
@@ -126,11 +126,11 @@ class BalanceDb extends BalanceDbTransaction
             ->where([$idAttribute => $id])
             ->first();
 
-        if ($row === false) {
+        if ($row === null) {
             return null;
         }
 
-        return $this->unserializeAttributes($row);
+        return $this->unserializeAttributes(iterator_to_array($row));
     }
 
     /**
@@ -164,10 +164,9 @@ class BalanceDb extends BalanceDbTransaction
      */
     protected function incrementAccountBalance($accountId, $amount)
     {
-        $value = new Expression("[[{$this->accountBalanceAttribute}]]+:amount", ['amount' => $amount]);
-        $this->db->createCommand()
-            ->update($this->accountTable, [$this->accountBalanceAttribute => $value], [$this->getAccountIdAttribute() => $accountId])
-            ->execute();
+        $this->db->table($this->accountTable)
+            ->where([$this->getAccountIdAttribute() => $accountId])
+            ->increment($this->accountBalanceAttribute, $amount);
     }
 
     /**
@@ -186,11 +185,24 @@ class BalanceDb extends BalanceDbTransaction
     /**
      * {@inheritdoc}
      */
-    protected function createDbTransaction()
+    protected function beginDbTransaction()
     {
-        if ($this->db->getTransaction() !== null) {
-            return null;
-        }
-        return $this->db->beginTransaction();
+        $this->db->beginTransaction();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function commitDbTransaction()
+    {
+        $this->db->commit();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function rollBackDbTransaction()
+    {
+        $this->db->rollBack();
     }
 }

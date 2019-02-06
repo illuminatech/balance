@@ -10,9 +10,9 @@ namespace Illuminatech\Balance;
 use Throwable;
 
 /**
- * BalanceDbTransaction allows performing balance operations as a single Database transaction.
+ * BalanceDbTransaction allows performing all balance operations as a single Database transaction.
  *
- * @see Manager
+ * @see Balance
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 1.0
@@ -20,9 +20,9 @@ use Throwable;
 abstract class BalanceDbTransaction extends Balance
 {
     /**
-     * @var array internal transaction instances stack.
+     * @var int internal transaction stack level.
      */
-    private $dbTransactions = [];
+    private $dbTransactionLevel = 0;
 
     /**
      * {@inheritdoc}
@@ -61,52 +61,63 @@ abstract class BalanceDbTransaction extends Balance
      */
     public function revert($transactionId, $data = [])
     {
-        $this->beginDbTransaction();
+        $this->incrementDbTransactionLevel();
         try {
             $result = parent::revert($transactionId, $data);
-            $this->commitDbTransaction();
+
+            $this->decrementDbTransactionLevel();
+
             return $result;
         } catch (Throwable $e) {
-            $this->rollBackDbTransaction();
+            $this->decrementDbTransactionLevel(false);
             throw $e;
         }
     }
 
     /**
-     * Begins transaction.
+     * Increments internal counter of transaction level.
+     * Begins new transaction, if counter is zero.
      */
-    protected function beginDbTransaction()
+    protected function incrementDbTransactionLevel()
     {
-        $this->dbTransactions[] = $this->createDbTransaction();
-    }
-
-    /**
-     * Commits current transaction.
-     */
-    protected function commitDbTransaction()
-    {
-        $transaction = array_pop($this->dbTransactions);
-        if ($transaction !== null) {
-            $transaction->commit();
+        if ($this->dbTransactionLevel === 0) {
+            $this->beginDbTransaction();
         }
+
+        $this->dbTransactionLevel++;
     }
 
     /**
-     * Rolls back current transaction.
-     */
-    protected function rollBackDbTransaction()
-    {
-        $transaction = array_pop($this->dbTransactions);
-        if ($transaction !== null) {
-            $transaction->rollBack();
-        }
-    }
-
-    /**
-     * Creates transaction instance, actually beginning transaction.
-     * If transactions are not supported, `null` will be returned.
+     * Decrements internal counter of transaction level.
+     * Ends current transaction with commit or rollback, if counter becomes zero.
      *
-     * @return object|\yii\db\Transaction|null transaction instance, `null` if transaction is not supported.
+     * @param  bool  $rollback whether to perform rollback instead of commit.
      */
-    abstract protected function createDbTransaction();
+    protected function decrementDbTransactionLevel($rollback = false)
+    {
+        $this->dbTransactionLevel--;
+
+        if ($this->dbTransactionLevel === 0) {
+            if ($rollback) {
+                $this->rollBackDbTransaction();
+            } else {
+                $this->commitDbTransaction();
+            }
+        }
+    }
+
+    /**
+     * Begins new DB transaction.
+     */
+    abstract protected function beginDbTransaction();
+
+    /**
+     * Commits current DB transaction.
+     */
+    abstract protected function commitDbTransaction();
+
+    /**
+     * Rolls back current DB transaction.
+     */
+    abstract protected function rollBackDbTransaction();
 }
