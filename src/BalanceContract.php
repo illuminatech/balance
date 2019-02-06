@@ -8,12 +8,12 @@
 namespace Illuminatech\Balance;
 
 /**
- * BalanceManagerContract defines balance manager interface.
+ * BalanceContract defines balance manager interface.
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 1.0
  */
-interface BalanceManagerContract
+interface BalanceContract
 {
     /**
      * Increases account current balance ('debit' operation).
