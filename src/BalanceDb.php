@@ -12,6 +12,26 @@ use Illuminate\Database\Connection;
 /**
  * BalanceDb is a balance manager, which uses relational database as data storage.
  *
+ * Database migration example:
+ *
+ * ```php
+ * Schema::create('balance_accounts', function (Blueprint $table) {
+ *     $table->increments('id');
+ *     $table->integer('balance')->default(0);
+ *     // ...
+ * });
+ *
+ * Schema::create('balance_transactions', function (Blueprint $table) {
+ *     $table->increments('id');
+ *     $table->timestamp('created_at');
+ *     $table->unsignedInteger('account_id');
+ *     $table->unsignedInteger('extra_account_id');
+ *     $table->integer('amount');
+ *     $table->text('data')->nullable();
+ *     // ...
+ * });
+ * ```
+ *
  * This manager will attempt to save value from transaction data in the table column, which name matches data key.
  * If such column does not exist data will be saved in [[dataAttribute]] column in serialized state.
  *
