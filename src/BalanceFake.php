@@ -18,17 +18,17 @@ namespace Illuminatech\Balance;
 class BalanceFake extends Balance
 {
     /**
-     * @var array[] list of accounts
+     * @var array[] list of accounts.
      */
     public $accounts = [];
 
     /**
-     * @var array account current balances.
+     * @var array account current balances in format: `[accountId => balanceValue]`.
      */
     public $accountBalances = [];
 
     /**
-     * @var array[] list of performed transactions
+     * @var array[] list of performed transactions.
      */
     public $transactions = [];
 
@@ -47,6 +47,7 @@ class BalanceFake extends Balance
     {
         $last = end($this->transactions);
         $preLast = prev($this->transactions);
+
         return [$preLast, $last];
     }
 
@@ -56,6 +57,7 @@ class BalanceFake extends Balance
     public function calculateBalance($account)
     {
         $accountId = $this->findAccountId($account);
+
         return $this->accountBalances[$accountId];
     }
 

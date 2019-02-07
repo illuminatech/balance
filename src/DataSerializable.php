@@ -86,6 +86,6 @@ trait DataSerializable
 
     protected function unserialize(string $value): array
     {
-        return json_decode($value);
+        return json_decode($value, true);
     }
 }

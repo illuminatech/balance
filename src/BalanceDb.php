@@ -36,11 +36,11 @@ class BalanceDb extends BalanceDbTransaction
     /**
      * @var string name of the database table, which should store account records.
      */
-    public $accountTable = 'balance_account';
+    public $accountTable = 'balance_accounts';
     /**
      * @var string name of the database table, which should store transaction records.
      */
-    public $transactionTable = 'balance_transaction';
+    public $transactionTable = 'balance_transactions';
 
     /**
      * @var string name of the account ID attribute at [[accountTable]]
@@ -130,7 +130,7 @@ class BalanceDb extends BalanceDbTransaction
             return null;
         }
 
-        return $this->unserializeAttributes(iterator_to_array($row));
+        return $this->unserializeAttributes((array)$row);
     }
 
     /**
@@ -148,11 +148,21 @@ class BalanceDb extends BalanceDbTransaction
     {
         $allowedAttributes = [];
 
+        $forbiddenAttributes = [
+            $this->getTransactionIdAttribute(),
+            $this->accountLinkAttribute,
+            $this->amountAttribute,
+            $this->dateAttribute,
+        ];
+        if (! empty($this->dataAttribute)) {
+            $forbiddenAttributes[] = $this->dataAttribute;
+        }
+
         foreach ($this->db->getSchemaBuilder()->getColumnListing($this->transactionTable) as $column) {
-            if ($column->isPrimaryKey && $column->autoIncrement) {
+            if ($column === $this->getTransactionIdAttribute()) {
                 continue;
             }
-            $allowedAttributes[] = $column->name;
+            $allowedAttributes[] = $column;
         }
         $attributes = $this->serializeAttributes($attributes, $allowedAttributes);
 
