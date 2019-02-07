@@ -79,11 +79,23 @@ trait DataSerializable
         return array_merge($attributes, $dataAttributes);
     }
 
+    /**
+     * Serializes array value into a string.
+     *
+     * @param  array  $value
+     * @return string
+     */
     protected function serialize(array $value): string
     {
         return json_encode($value);
     }
 
+    /**
+     * Unserializes value from string.
+     *
+     * @param  string  $value
+     * @return array
+     */
     protected function unserialize(string $value): array
     {
         return json_decode($value, true);

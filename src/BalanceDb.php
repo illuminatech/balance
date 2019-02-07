@@ -12,15 +12,13 @@ use Illuminate\Database\Connection;
 /**
  * BalanceDb is a balance manager, which uses relational database as data storage.
  *
- *
- *
  * This manager will attempt to save value from transaction data in the table column, which name matches data key.
  * If such column does not exist data will be saved in [[dataAttribute]] column in serialized state.
  *
  * > Note: watch for the keys you use in transaction data: make sure they do not conflict with columns, which are
  *   reserved for other purposes, like primary keys.
  *
- * @see Manager
+ * @see Balance
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 1.0
@@ -30,70 +28,57 @@ class BalanceDb extends BalanceDbTransaction
     use DataSerializable;
 
     /**
-     * @var Connection the DB connection instance.
-     */
-    public $db = 'db';
-    /**
      * @var string name of the database table, which should store account records.
      */
     public $accountTable = 'balance_accounts';
+
     /**
      * @var string name of the database table, which should store transaction records.
      */
     public $transactionTable = 'balance_transactions';
 
     /**
-     * @var string name of the account ID attribute at [[accountTable]]
+     * @var string name of the account ID attribute at {@link accountTable}
      */
-    private $_accountIdAttribute;
+    public $accountIdAttribute = 'id';
+
     /**
-     * @var string name of the transaction ID attribute at [[transactionTable]]
+     * @var string name of the transaction ID attribute at {@link transactionTable}
      */
-    private $_transactionIdAttribute;
+    public $transactionIdAttribute = 'id';
 
+    /**
+     * @var Connection the DB connection instance.
+     */
+    private $connection;
 
-    public function __construct(Connection $db)
+    /**
+     * Constructor.
+     *
+     * @param  Connection  $connection DB connection to be used.
+     */
+    public function __construct(Connection $connection)
     {
-        $this->db = $db;
+        $this->connection = $connection;
     }
 
     /**
-     * @return string
+     * @return Connection DB connection instance.
      */
-    public function getAccountIdAttribute()
+    public function getConnection(): Connection
     {
-        if ($this->_accountIdAttribute === null) {
-            $this->_accountIdAttribute = 'id';
-        }
-
-        return $this->_accountIdAttribute;
+        return $this->connection;
     }
 
     /**
-     * @param string $accountIdAttribute
+     * @param  Connection  $connection  DB connection to be used.
+     * @return static self reference.
      */
-    public function setAccountIdAttribute($accountIdAttribute)
+    public function setConnection(Connection $connection)
     {
-        $this->_accountIdAttribute = $accountIdAttribute;
-    }
+        $this->connection = $connection;
 
-    /**
-     * @return string
-     */
-    public function getTransactionIdAttribute()
-    {
-        if ($this->_transactionIdAttribute === null) {
-            $this->_transactionIdAttribute = 'id';
-        }
-        return $this->_transactionIdAttribute;
-    }
-
-    /**
-     * @param string $transactionIdAttribute
-     */
-    public function setTransactionIdAttribute($transactionIdAttribute)
-    {
-        $this->_transactionIdAttribute = $transactionIdAttribute;
+        return $this;
     }
 
     /**
@@ -101,11 +86,11 @@ class BalanceDb extends BalanceDbTransaction
      */
     protected function findAccountId($attributes)
     {
-        $id = $this->db->query()
-            ->select([$this->getAccountIdAttribute()])
+        $id = $this->connection->query()
+            ->select([$this->accountIdAttribute])
             ->from($this->accountTable)
             ->where($attributes)
-            ->value($this->getAccountIdAttribute());
+            ->value($this->accountIdAttribute);
 
         if ($id === false) {
             return null;
@@ -119,9 +104,9 @@ class BalanceDb extends BalanceDbTransaction
      */
     protected function findTransaction($id)
     {
-        $idAttribute = $this->getTransactionIdAttribute();
+        $idAttribute = $this->transactionIdAttribute;
 
-        $row = $this->db->query()
+        $row = $this->connection->query()
             ->from($this->transactionTable)
             ->where([$idAttribute => $id])
             ->first();
@@ -138,7 +123,7 @@ class BalanceDb extends BalanceDbTransaction
      */
     protected function createAccount($attributes)
     {
-        return $this->db->table($this->accountTable)->insertGetId($attributes);
+        return $this->connection->table($this->accountTable)->insertGetId($attributes);
     }
 
     /**
@@ -148,25 +133,16 @@ class BalanceDb extends BalanceDbTransaction
     {
         $allowedAttributes = [];
 
-        $forbiddenAttributes = [
-            $this->getTransactionIdAttribute(),
-            $this->accountLinkAttribute,
-            $this->amountAttribute,
-            $this->dateAttribute,
-        ];
-        if (! empty($this->dataAttribute)) {
-            $forbiddenAttributes[] = $this->dataAttribute;
-        }
-
-        foreach ($this->db->getSchemaBuilder()->getColumnListing($this->transactionTable) as $column) {
-            if ($column === $this->getTransactionIdAttribute()) {
+        foreach ($this->connection->getSchemaBuilder()->getColumnListing($this->transactionTable) as $column) {
+            if ($column === $this->transactionIdAttribute) {
                 continue;
             }
             $allowedAttributes[] = $column;
         }
+
         $attributes = $this->serializeAttributes($attributes, $allowedAttributes);
 
-        return $this->db->table($this->transactionTable)->insertGetId($attributes);
+        return $this->connection->table($this->transactionTable)->insertGetId($attributes);
     }
 
     /**
@@ -174,8 +150,8 @@ class BalanceDb extends BalanceDbTransaction
      */
     protected function incrementAccountBalance($accountId, $amount)
     {
-        $this->db->table($this->accountTable)
-            ->where([$this->getAccountIdAttribute() => $accountId])
+        $this->connection->table($this->accountTable)
+            ->where([$this->accountIdAttribute => $accountId])
             ->increment($this->accountBalanceAttribute, $amount);
     }
 
@@ -186,7 +162,7 @@ class BalanceDb extends BalanceDbTransaction
     {
         $accountId = $this->fetchAccountId($account);
 
-        return $this->db->query()
+        return $this->connection->query()
             ->from($this->transactionTable)
             ->where([$this->accountLinkAttribute => $accountId])
             ->sum($this->amountAttribute);
@@ -197,7 +173,7 @@ class BalanceDb extends BalanceDbTransaction
      */
     protected function beginDbTransaction()
     {
-        $this->db->beginTransaction();
+        $this->connection->beginTransaction();
     }
 
     /**
@@ -205,7 +181,7 @@ class BalanceDb extends BalanceDbTransaction
      */
     protected function commitDbTransaction()
     {
-        $this->db->commit();
+        $this->connection->commit();
     }
 
     /**
@@ -213,6 +189,6 @@ class BalanceDb extends BalanceDbTransaction
      */
     protected function rollBackDbTransaction()
     {
-        $this->db->rollBack();
+        $this->connection->rollBack();
     }
 }

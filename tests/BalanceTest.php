@@ -68,7 +68,7 @@ class BalanceTest extends TestCase
         $now = time();
         $manager->increase(1, 10);
         $transaction = $manager->getLastTransaction();
-        $this->assertTrue($transaction['created_at'] >= $now);
+        $this->assertTrue($transaction['created_at']->getTimestamp() >= $now);
 
         $manager->dateAttributeValue = function() {
             return 'callback';
@@ -164,9 +164,9 @@ class BalanceTest extends TestCase
     public function testEventBeforeCreateTransaction()
     {
         $manager = new BalanceFake();
-        $manager->dispatcher = new Dispatcher();
+        $manager->setEventDispatcher(new Dispatcher());
 
-        $manager->dispatcher->listen(CreatingTransaction::class, function (CreatingTransaction $event) {
+        $manager->getEventDispatcher()->listen(CreatingTransaction::class, function (CreatingTransaction $event) {
             $event->data['extra'] = 'event';
         });
 
@@ -181,10 +181,10 @@ class BalanceTest extends TestCase
     public function testEventAfterCreateTransaction()
     {
         $manager = new BalanceFake();
-        $manager->dispatcher = new Dispatcher();
+        $manager->setEventDispatcher(new Dispatcher());
 
         $eventTransactionId = null;
-        $manager->dispatcher->listen(TransactionCreated::class, function (TransactionCreated $event) use (&$eventTransactionId) {
+        $manager->getEventDispatcher()->listen(TransactionCreated::class, function (TransactionCreated $event) use (&$eventTransactionId) {
             $eventTransactionId = $event->transactionId;
         });
 

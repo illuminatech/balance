@@ -12,6 +12,8 @@ use Throwable;
 /**
  * BalanceDbTransaction allows performing all balance operations as a single Database transaction.
  *
+ * While wrapping all balance operations into transaction, this class ensures such transactions to be not nested.
+ *
  * @see Balance
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
@@ -33,6 +35,7 @@ abstract class BalanceDbTransaction extends Balance
         try {
             $result = parent::increase($account, $amount, $data);
             $this->commitDbTransaction();
+
             return $result;
         } catch (Throwable $e) {
             $this->rollBackDbTransaction();
@@ -49,6 +52,7 @@ abstract class BalanceDbTransaction extends Balance
         try {
             $result = parent::transfer($from, $to, $amount, $data);
             $this->commitDbTransaction();
+
             return $result;
         } catch (Throwable $e) {
             $this->rollBackDbTransaction();

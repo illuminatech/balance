@@ -8,6 +8,8 @@
 namespace Illuminatech\Balance;
 
 use InvalidArgumentException;
+use Illuminate\Support\Carbon;
+use Illuminate\Contracts\Events\Dispatcher;
 use Illuminatech\Balance\Events\TransactionCreated;
 use Illuminatech\Balance\Events\CreatingTransaction;
 
@@ -25,43 +27,69 @@ abstract class Balance implements BalanceContract
      * @var bool whether to automatically create requested account, if it does not yet exist.
      */
     public $autoCreateAccount = true;
+
     /**
      * @var string name of the transaction entity attribute, which should store amount.
      */
     public $amountAttribute = 'amount';
+
     /**
      * @var string name of the transaction entity attribute, which should be used to link transaction entity with
      * account entity (store associated account ID).
      */
     public $accountLinkAttribute = 'account_id';
+
     /**
      * @var string name of the transaction entity attribute, which should store additional affected account ID.
      * This attribute will be filled only at `transfer()` method execution and will store ID of the account transferred
      * from or to, depending on the context.
      * If not set, no information about the extra account context will be saved.
      *
-     * Note: absence of this field will affect logic of some methods like [[revert()]].
+     * Note: absence of this field will affect logic of some methods like {@link revert()}.
      */
     public $extraAccountLinkAttribute;
+
     /**
      * @var string name of the account entity attribute, which should store current balance value.
      */
     public $accountBalanceAttribute;
+
     /**
      * @var string name of the transaction entity attribute, which should store date.
      */
     public $dateAttribute = 'created_at';
+
     /**
      * @var mixed|callable value which should be used for new transaction date composition.
-     * This can be plain value, object like [[\yii\db\Expression]] or a PHP callback, which returns it.
-     * If not set PHP `time()` function will be used.
+     * This can be plain value, object like {@link \Illuminate\Database\Query\Expression} or a PHP callback, which returns it.
+     * If not set new {@link \Illuminate\Support\Carbon} instance will be used.
      */
     public $dateAttributeValue;
+
     /**
      * @var \Illuminate\Events\Dispatcher event dispatcher.
      */
-    public $dispatcher;
+    private $eventDispatcher;
 
+
+    /**
+     * @param  Dispatcher  $dispatcher
+     * @return static self reference.
+     */
+    public function setEventDispatcher(Dispatcher $dispatcher): self
+    {
+        $this->eventDispatcher = $dispatcher;
+
+        return $this;
+    }
+
+    /**
+     * @return Dispatcher|null event dispatcher instance, `null` - if not available.
+     */
+    public function getEventDispatcher()
+    {
+        return $this->eventDispatcher;
+    }
 
     /**
      * {@inheritdoc}
@@ -144,7 +172,7 @@ abstract class Balance implements BalanceContract
     }
 
     /**
-     * @param mixed $idOrFilter account ID or filter condition.
+     * @param  mixed  $idOrFilter account ID or filter condition.
      * @return mixed account ID.
      */
     protected function fetchAccountId($idOrFilter)
@@ -167,47 +195,53 @@ abstract class Balance implements BalanceContract
 
     /**
      * Finds account ID matching given filter attributes.
-     * @param array $attributes filter attributes.
+     *
+     * @param  array  $attributes filter attributes.
      * @return mixed|null account ID, `null` - if not found.
      */
     abstract protected function findAccountId($attributes);
 
     /**
      * Finds transaction data by ID.
-     * @param mixed $id transaction ID.
+     *
+     * @param  mixed  $id transaction ID.
      * @return array|null transaction data, `null` - if not found.
      */
     abstract protected function findTransaction($id);
 
     /**
      * Creates new account with given attributes.
-     * @param array $attributes account attributes in format: attribute => value
+     *
+     * @param  array  $attributes account attributes in format: attribute => value
      * @return mixed created account ID.
      */
     abstract protected function createAccount($attributes);
 
     /**
      * Writes transaction data into persistent storage.
-     * @param array $attributes attributes associated with transaction in format: attribute => value
-     * @return mixed new transaction ID.
+     *
+     * @param  array  $attributes attributes associated with transaction in format: attribute => value
+     * @return mixed  new transaction ID.
      */
     abstract protected function createTransaction($attributes);
 
     /**
      * Increases current account balance value.
-     * @param mixed $accountId account ID.
-     * @param int|float $amount amount to be added to the current balance.
+     *
+     * @param  mixed  $accountId account ID.
+     * @param  int|float  $amount amount to be added to the current balance.
      */
     abstract protected function incrementAccountBalance($accountId, $amount);
 
     /**
      * Returns actual now date value for the transaction.
+     *
      * @return mixed date attribute value.
      */
     protected function getDateAttributeValue()
     {
         if ($this->dateAttributeValue === null) {
-            return time();
+            return new Carbon;
         }
 
         if (is_callable($this->dateAttributeValue)) {
@@ -221,37 +255,39 @@ abstract class Balance implements BalanceContract
 
     /**
      * This method is invoked before creating transaction.
-     * @param mixed $accountId account ID.
-     * @param array $data transaction data.
+     *
+     * @param  mixed  $accountId account ID.
+     * @param  array  $data transaction data.
      * @return array adjusted transaction data.
      */
     protected function beforeCreateTransaction($accountId, $data): array
     {
-        if ($this->dispatcher === null) {
+        if ($this->eventDispatcher === null) {
             return $data;
         }
 
         $event = new CreatingTransaction($accountId, $data);
 
-        $this->dispatcher->dispatch($event);
+        $this->eventDispatcher->dispatch($event);
 
         return $event->data;
     }
 
     /**
      * This method is invoked after transaction has been created.
-     * @param mixed $transactionId transaction ID.
-     * @param mixed $accountId account ID.
-     * @param array $data transaction data.
+     *
+     * @param  mixed  $transactionId transaction ID.
+     * @param  mixed  $accountId account ID.
+     * @param  array  $data transaction data.
      */
     protected function afterCreateTransaction($transactionId, $accountId, $data)
     {
-        if ($this->dispatcher === null) {
+        if ($this->eventDispatcher === null) {
             return;
         }
 
         $event = new TransactionCreated($transactionId, $accountId, $data);
 
-        $this->dispatcher->dispatch($event);
+        $this->eventDispatcher->dispatch($event);
     }
 }
