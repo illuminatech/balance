@@ -32,6 +32,12 @@ use Illuminate\Database\Connection;
  * });
  * ```
  *
+ * You can publish the predefined migration using following command:
+ *
+ * ```
+ * php artisan vendor:publish --provider="Illuminatech\Balance\BalanceServiceProvider" --tag="migrations"
+ * ```
+ *
  * This manager will attempt to save value from transaction data in the table column, which name matches data key.
  * If such column does not exist data will be saved in [[dataAttribute]] column in serialized state.
  *

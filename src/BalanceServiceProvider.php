@@ -32,6 +32,8 @@ class BalanceServiceProvider extends ServiceProvider
      */
     public function register()
     {
+        $this->registerPublications();
+
         $this->app->singleton(BalanceContract::class, function () {
             $balance = $this->createBalance();
 
@@ -51,5 +53,23 @@ class BalanceServiceProvider extends ServiceProvider
     protected function createBalance(): BalanceContract
     {
         return new BalanceDb(DB::connection());
+    }
+
+    /**
+     * Register resources to be published by the publish command.
+     */
+    protected function registerPublications(): void
+    {
+        if (! $this->app->runningInConsole()) {
+            return;
+        }
+
+        if (! class_exists(\CreateBalanceTables::class)) {
+            $timestamp = date('Y_m_d_His', time());
+
+            $this->publishes([
+                __DIR__.'/../database/migrations/create_balance_tables.php.stub' => $this->app->databasePath().'/migrations/'.$timestamp.'_create_balance_tables.php',
+            ], 'migrations');
+        }
     }
 }
