@@ -64,7 +64,7 @@ class BalanceDbTest extends TestCase
 
         $manager->increase(1, 50, ['extra' => 'custom']);
         $transaction = $this->getLastTransaction();
-        $this->assertContains('custom', $transaction->data);
+        $this->assertStringContains('custom', $transaction->data);
     }
 
     /**
@@ -162,6 +162,6 @@ class BalanceDbTest extends TestCase
             ]
         );
         $transaction = $this->getLastTransaction();
-        $this->assertContains('123456789', $transaction->data);
+        $this->assertStringContains('123456789', $transaction->data);
     }
 }

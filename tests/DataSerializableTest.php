@@ -13,7 +13,7 @@ class DataSerializableTest extends TestCase
         $manager->increase(1, 50, ['extra' => 'custom']);
         $transaction = $manager->getLastTransaction();
         $this->assertEquals(50, $transaction['amount']);
-        $this->assertContains('custom', $transaction['data']);
+        $this->assertStringContains('custom', $transaction['data']);
     }
 
     public function testUnserialize()

@@ -56,4 +56,16 @@ class TestCase extends \PHPUnit\Framework\TestCase
     {
         return $this->getConnection()->getSchemaBuilder();
     }
+
+    /**
+     * Asserts that a string haystack contains a needle.
+     *
+     * @param  string  $needle
+     * @param  string  $haystack
+     * @param  string  $message
+     */
+    protected function assertStringContains(string $needle, string $haystack, string $message = '')
+    {
+        $this->assertTrue(strpos($haystack, $needle) !== false, $message);
+    }
 }
