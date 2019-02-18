@@ -125,7 +125,7 @@ In case you are using [[\Illuminatech\Balance\BalanceDb]], you can publish prede
 using following console command:
 
 ```
-php artisan vendor:publish --provider="Illuminatech\Balance\BalanceServiceProvider" --tag=migration
+php artisan vendor:publish --provider="Illuminatech\Balance\BalanceServiceProvider" --tag=migrations
 ```
 
 

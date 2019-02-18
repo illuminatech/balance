@@ -34,9 +34,9 @@ class CreateBalanceTables extends Migration
         Schema::create('balance_transactions', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('account_id');
-            $table->unsignedInteger('extra_account_id');
+            $table->unsignedInteger('extra_account_id')->nullable();
             $table->integer('amount');
-            $table->text('data')->nullable();
+            $table->json('data')->nullable();
             $table->timestamp('created_at');
 
             $table->foreign('account_id')

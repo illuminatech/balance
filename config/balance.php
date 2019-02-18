@@ -10,5 +10,6 @@
 return [
     'accountTable' => 'balance_accounts',
     'transactionTable' => 'balance_transactions',
+    'extraAccountLinkAttribute' => 'extra_account_id',
     'dataAttribute' => 'data',
 ];
