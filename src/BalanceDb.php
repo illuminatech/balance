@@ -12,6 +12,19 @@ use Illuminate\Database\Connection;
 /**
  * BalanceDb is a balance manager, which uses relational database as data storage.
  *
+ * Configuration example:
+ *
+ * ```php
+ * return [
+ *     '__class' => Illuminatech\Balance\BalanceDb::class,
+ *     'accountTable' => 'balance_accounts',
+ *     'transactionTable' => 'balance_transactions',
+ *     'accountBalanceAttribute' => 'balance',
+ *     'extraAccountLinkAttribute' => 'extra_account_id',
+ *     'dataAttribute' => 'data',
+ * ];
+ * ```
+ *
  * Database migration example:
  *
  * ```php
