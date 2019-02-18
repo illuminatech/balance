@@ -15,7 +15,8 @@
         }
     ],
     "require": {
-        "illuminate/database": "^5.6"
+        "illuminate/database": "^5.6",
+        "illuminatech/array-factory": "dev-master"
     },
     "require-dev": {
         "illuminate/events": "^5.6"

@@ -109,6 +109,26 @@ Balance::increase($accountId, $amount);
 In these documentation facade is used in code snippets for simplicity.
 
 
+## Application configuration <span id="application-configuration"></span>
+
+This extension uses [illuminatech/array-factory](https://github.com/illuminatech/array-factory) for configuration.
+Make sure you are familiar with 'array factory' concept before configuring this extension.
+Configuration is stored at 'config/balance.php' file.
+
+You can publish predefined configuration file using following console command:
+
+```
+php artisan vendor:publish --provider="Illuminatech\Balance\BalanceServiceProvider" --tag=config
+```
+
+In case you are using [[\Illuminatech\Balance\BalanceDb]], you can publish predefined database migration for it
+using following console command:
+
+```
+php artisan vendor:publish --provider="Illuminatech\Balance\BalanceServiceProvider" --tag=migration
+```
+
+
 ## Basic operations <span id="basic-operations"></span>
 
 In order to increase (debit) balance at particular account, [[\Illuminatech\Balance\BalanceContract::increase()]] method is used:

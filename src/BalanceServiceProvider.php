@@ -7,7 +7,7 @@
 
 namespace Illuminatech\Balance;
 
-use Illuminate\Support\Facades\DB;
+use Illuminatech\ArrayFactory\Factory;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Contracts\Events\Dispatcher;
 
@@ -52,7 +52,12 @@ class BalanceServiceProvider extends ServiceProvider
      */
     protected function createBalance(): BalanceContract
     {
-        return new BalanceDb(DB::connection());
+        return (new Factory($this->app))->make(array_merge(
+            [
+                '__class' => BalanceDb::class,
+            ],
+            $this->app->get('config')->get('balance', [])
+        ));
     }
 
     /**
@@ -63,6 +68,10 @@ class BalanceServiceProvider extends ServiceProvider
         if (! $this->app->runningInConsole()) {
             return;
         }
+
+        $this->publishes([
+            __DIR__ . '/../config/balance.php' => $this->app->make('path.config').DIRECTORY_SEPARATOR.'balance.php',
+        ], 'config');
 
         if (! class_exists(\CreateBalanceTables::class)) {
             $timestamp = date('Y_m_d_His', time());
