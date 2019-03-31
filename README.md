@@ -87,7 +87,7 @@ class BalanceController extends Controller
     {
         $balance = Container::getInstance()->get(BalanceContract::class);
         
-        $balance->decrese($accountId, $amount);
+        $balance->decrease($accountId, $amount);
         
         // ...
     }
