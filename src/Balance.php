@@ -1,7 +1,7 @@
 <?php
 /**
  * @link https://github.com/illuminatech
- * @copyright Copyright (c) 2015 Illuminatech
+ * @copyright Copyright (c) 2019 Illuminatech
  * @license [New BSD License](http://www.opensource.org/licenses/bsd-license.php)
  */
 
@@ -45,7 +45,7 @@ abstract class Balance implements BalanceContract
      * from or to, depending on the context.
      * If not set, no information about the extra account context will be saved.
      *
-     * Note: absence of this field will affect logic of some methods like {@link revert()}.
+     * Note: absence of this field will affect logic of some methods like {@see revert()}.
      */
     public $extraAccountLinkAttribute;
 
@@ -61,8 +61,8 @@ abstract class Balance implements BalanceContract
 
     /**
      * @var mixed|callable value which should be used for new transaction date composition.
-     * This can be plain value, object like {@link \Illuminate\Database\Query\Expression} or a PHP callback, which returns it.
-     * If not set new {@link \Illuminate\Support\Carbon} instance will be used.
+     * This can be plain value, object like {@see \Illuminate\Database\Query\Expression} or a PHP callback, which returns it.
+     * If not set new {@see \Illuminate\Support\Carbon} instance will be used.
      */
     public $dateAttributeValue;
 

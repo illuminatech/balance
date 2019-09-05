@@ -1,7 +1,7 @@
 <?php
 /**
  * @link https://github.com/illuminatech
- * @copyright Copyright (c) 2015 Illuminatech
+ * @copyright Copyright (c) 2019 Illuminatech
  * @license [New BSD License](http://www.opensource.org/licenses/bsd-license.php)
  */
 
@@ -11,7 +11,7 @@ namespace Illuminatech\Balance;
  * DataSerializable provides ability to serialize extra attributes into the single field.
  *
  * It may be useful using data storage with static data schema, like relational database.
- * This trait supposed to be used inside descendant of {@link Balance}.
+ * This trait supposed to be used inside descendant of {@see Balance}.
  *
  * @mixin Balance
  *

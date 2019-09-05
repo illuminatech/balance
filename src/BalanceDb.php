@@ -1,7 +1,7 @@
 <?php
 /**
  * @link https://github.com/illuminatech
- * @copyright Copyright (c) 2015 Illuminatech
+ * @copyright Copyright (c) 2019 Illuminatech
  * @license [New BSD License](http://www.opensource.org/licenses/bsd-license.php)
  */
 
@@ -52,7 +52,7 @@ use Illuminate\Database\Connection;
  * ```
  *
  * This manager will attempt to save value from transaction data in the table column, which name matches data key.
- * If such column does not exist data will be saved in [[dataAttribute]] column in serialized state.
+ * If such column does not exist data will be saved in {@see dataAttribute} column in serialized state.
  *
  * > Note: watch for the keys you use in transaction data: make sure they do not conflict with columns, which are
  *   reserved for other purposes, like primary keys.
@@ -77,24 +77,24 @@ class BalanceDb extends BalanceDbTransaction
     public $transactionTable = 'balance_transactions';
 
     /**
-     * @var string name of the account ID attribute at {@link accountTable}
+     * @var string name of the account ID attribute at {@see accountTable}
      */
     public $accountIdAttribute = 'id';
 
     /**
-     * @var string name of the transaction ID attribute at {@link transactionTable}
+     * @var string name of the transaction ID attribute at {@see transactionTable}
      */
     public $transactionIdAttribute = 'id';
 
     /**
-     * @var Connection the DB connection instance.
+     * @var \Illuminate\Database\Connection the DB connection instance.
      */
     private $connection;
 
     /**
      * Constructor.
      *
-     * @param  Connection  $connection DB connection to be used.
+     * @param  \Illuminate\Database\Connection  $connection DB connection to be used.
      */
     public function __construct(Connection $connection)
     {
@@ -102,7 +102,7 @@ class BalanceDb extends BalanceDbTransaction
     }
 
     /**
-     * @return Connection DB connection instance.
+     * @return \Illuminate\Database\Connection DB connection instance.
      */
     public function getConnection(): Connection
     {
@@ -110,7 +110,7 @@ class BalanceDb extends BalanceDbTransaction
     }
 
     /**
-     * @param  Connection  $connection  DB connection to be used.
+     * @param  \Illuminate\Database\Connection  $connection  DB connection to be used.
      * @return static self reference.
      */
     public function setConnection(Connection $connection)

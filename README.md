@@ -10,8 +10,8 @@ This extension provides basic support for balance accounting (bookkeeping) syste
 
 For license information check the [LICENSE](LICENSE.md)-file.
 
-[![Latest Stable Version](https://poser.pugx.org/illuminatech/balance/v/stable.png)](https://packagist.org/packages/illuminatech/balance)
-[![Total Downloads](https://poser.pugx.org/illuminatech/balance/downloads.png)](https://packagist.org/packages/illuminatech/balance)
+[![Latest Stable Version](https://img.shields.io/packagist/v/illuminatech/balance.svg)](https://packagist.org/packages/illuminatech/balance)
+[![Total Downloads](https://img.shields.io/packagist/dt/illuminatech/balance.svg)](https://packagist.org/packages/illuminatech/balance)
 [![Build Status](https://travis-ci.org/illuminatech/balance.svg?branch=master)](https://travis-ci.org/illuminatech/balance)
 
 
@@ -56,14 +56,14 @@ The trick is: if you sum current amount over all user related accounts ('payment
 it will always be equal to zero. Such check allows you to verify is something went wrong any time.
 
 This extension introduces term 'balance manager' as a service, which should handle all balance transactions.
-Public contract for such manager is determined by [[\Illuminatech\Balance\BalanceContract]] interface.
+Public contract for such manager is determined by `\Illuminatech\Balance\BalanceContract` interface.
 Following particular implementations are provided:
 
- - [[\Illuminatech\Balance\BalanceDb]] - uses a relational database as a data storage.
+ - [\Illuminatech\Balance\BalanceDb](src/BalanceDb.php) - uses a relational database as a data storage.
 
 Please refer to the particular manager class for more details.
 
-This extension provides [[\Illuminatech\Balance\BalanceServiceProvider]] service provider, which binds [[\Illuminatech\Balance\BalanceContract]]
+This extension provides `\Illuminatech\Balance\BalanceServiceProvider` service provider, which binds `\Illuminatech\Balance\BalanceContract`
 as a singleton in DI container. Thus you can get balance manager via automatic DI injections or via container instance.
 For example:
 
@@ -96,7 +96,7 @@ class BalanceController extends Controller
 }
 ```
 
-You may as well use [[\Illuminatech\Balance\Facades\Balance]] facade. For example:
+You may as well use `\Illuminatech\Balance\Facades\Balance` facade. For example:
 
 ```php
 <?php
@@ -121,7 +121,7 @@ You can publish predefined configuration file using following console command:
 php artisan vendor:publish --provider="Illuminatech\Balance\BalanceServiceProvider" --tag=config
 ```
 
-In case you are using [[\Illuminatech\Balance\BalanceDb]], you can publish predefined database migration for it
+In case you are using `\Illuminatech\Balance\BalanceDb`, you can publish predefined database migration for it
 using following console command:
 
 ```
@@ -131,7 +131,7 @@ php artisan vendor:publish --provider="Illuminatech\Balance\BalanceServiceProvid
 
 ## Basic operations <span id="basic-operations"></span>
 
-In order to increase (debit) balance at particular account, [[\Illuminatech\Balance\BalanceContract::increase()]] method is used:
+In order to increase (debit) balance at particular account, `\Illuminatech\Balance\BalanceContract::increase()` method is used:
 
 ```php
 <?php
@@ -141,7 +141,7 @@ use Illuminatech\Balance\Facades\Balance;
 Balance::increase($accountId, 500); // add 500 credits to account
 ```
 
-In order to decrease (credit) balance at particular account, [[\Illuminatech\Balance\BalanceContract:decrease()]] method is used:
+In order to decrease (credit) balance at particular account, `\Illuminatech\Balance\BalanceContract:decrease()` method is used:
 
 ```php
 <?php
@@ -154,7 +154,7 @@ Balance::decrease($accountId, 100); // remove 100 credits from account
 > Tip: actually, method `decrease()` is redundant, you can call `increase()` with negative amount in order to achieve same result.
 
 It is unlikely you will use plain `increase()` and `decrease()` methods in your application. In most cases there is a need
-to **transfer** money from one account to another at once. Method [[\Illuminatech\Balance\BalanceContract::transfer()]] can be
+to **transfer** money from one account to another at once. Method `\Illuminatech\Balance\BalanceContract::transfer()` can be
 used for this:
 
 ```php
@@ -172,9 +172,9 @@ all money transfer history for particular account, simply selecting all transact
 will have positive amount, while 'credit' ones - negative.
 
 > Note: If you wish each transaction created by `transfer()` remember another account involved in the process, you'll need
-  to setup [[\Illuminatech\Balance\Balance::$extraAccountLinkAttribute]].
+  to setup `\Illuminatech\Balance\Balance::$extraAccountLinkAttribute`.
 
-You may revert particular transaction using [[\Illuminatech\Balance\BalanceContract::revert()]] method:
+You may revert particular transaction using `\Illuminatech\Balance\BalanceContract::revert()` method:
 
 ```php
 <?php
@@ -216,7 +216,7 @@ Balance::transfer(
 
 In this example balance manager will find ID of the affected accounts automatically, using provided attributes as a filter.
 
-You may enable [[\Illuminatech\Balance\Balance::$autoCreateAccount]], allowing automatic creation of the missing accounts, if they
+You may enable `\Illuminatech\Balance\Balance::$autoCreateAccount`, allowing automatic creation of the missing accounts, if they
 are specified as attributes set. This allows accounts creation on the fly, by demand only, eliminating necessity of their
 pre-creation.
 
@@ -228,7 +228,7 @@ configure your balance manager in the way it is not used.
 ## Finding account current balance <span id="finding-account-current-balance"></span>
 
 Current money amount at particular account can always be calculated as a sum of amounts over related transactions.
-You can use [[\Illuminatech\Balance\BalanceContract::calculateBalance()]] method for that:
+You can use `\Illuminatech\Balance\BalanceContract::calculateBalance()` method for that:
 
 ```php
 <?php
@@ -242,7 +242,7 @@ echo Balance::calculateBalance($toAccount); // outputs: 100
 ```
 
 However, calculating current balance each time you need it, is not efficient. Thus you can specify an attribute of account
-entity, which will be used to store current account balance. This can be done via [[\Illuminatech\Balance\Balance::$accountBalanceAttribute]].
+entity, which will be used to store current account balance. This can be done via `\Illuminatech\Balance\Balance::$accountBalanceAttribute`.
 Each time balance manager performs a transaction it will update this attribute accordingly:
 
 ```php
@@ -308,8 +308,8 @@ Balance::transfer(
 ```
 
 The way extra attributes are stored in the data storage depends on particular balance manager implementation.
-For example: [[\Illuminatech\Balance\BalanceDb]] will try to store extra data inside transaction table columns, if their name
-equals the parameter name. You may as well setup special data field via [[\Illuminatech\Balance\BalanceDb::$dataAttribute]],
+For example: `\Illuminatech\Balance\BalanceDb` will try to store extra data inside transaction table columns, if their name
+equals the parameter name. You may as well setup special data field via `\Illuminatech\Balance\BalanceDb::$dataAttribute`,
 which will store all extra parameters, which have no matching column, in serialized state.
 
 > Note: watch for the keys you use in transaction data: make sure they do not conflict with columns, which are
@@ -318,10 +318,10 @@ which will store all extra parameters, which have no matching column, in seriali
 
 ## Events <span id="events"></span>
 
-[[\Illuminatech\Balance\Balance]] provides several events, which can be handled via event listener:
+`\Illuminatech\Balance\Balance` provides several events, which can be handled via event listener:
 
- - [[\Illuminatech\Balance\Events\CreatingTransaction]] - raised before creating new transaction.
- - [[\Illuminatech\Balance\Events\TransactionCreated]] - raised after creating new transaction.
+ - [\Illuminatech\Balance\Events\CreatingTransaction](src/Events/CreatingTransaction.php) - raised before creating new transaction.
+ - [\Illuminatech\Balance\Events\TransactionCreated](src/Events/TransactionCreated.php) - raised after creating new transaction.
 
 For example:
 

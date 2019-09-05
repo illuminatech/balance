@@ -1,7 +1,7 @@
 <?php
 /**
  * @link https://github.com/illuminatech
- * @copyright Copyright (c) 2015 Illuminatech
+ * @copyright Copyright (c) 2019 Illuminatech
  * @license [New BSD License](http://www.opensource.org/licenses/bsd-license.php)
  */
 
@@ -14,7 +14,7 @@ use Illuminatech\Balance\BalanceContract;
 /**
  * Balance is a facade for balance manager access.
  *
- * This facade requires {@link \Illuminatech\Balance\BalanceContract} implementation to be bound as singleton
+ * This facade requires {@see \Illuminatech\Balance\BalanceContract} implementation to be bound as singleton
  * to the application service container.
  *
  * @see \Illuminatech\Balance\BalanceContract

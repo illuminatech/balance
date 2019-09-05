@@ -1,7 +1,7 @@
 <?php
 /**
  * @link https://github.com/illuminatech
- * @copyright Copyright (c) 2015 Illuminatech
+ * @copyright Copyright (c) 2019 Illuminatech
  * @license [New BSD License](http://www.opensource.org/licenses/bsd-license.php)
  */
 
@@ -49,8 +49,8 @@ interface BalanceContract
     /**
      * Reverts specified transaction.
      * This method does not deletes original transaction, but creates new one, which compensate it.
-     * If transaction has been created via [[transfer()]] method, 2 transactions will be created affecting both
-     * accounts used at [[transfer()]].
+     * If transaction has been created via {@see transfer()} method, 2 transactions will be created affecting both
+     * accounts used at {@see transfer()}.
      *
      * @param  mixed  $transactionId ID of the transaction to be reverted.
      * @param  array  $data extra transaction data
