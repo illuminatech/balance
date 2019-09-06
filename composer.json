@@ -15,11 +15,12 @@
         }
     ],
     "require": {
-        "illuminate/database": "^5.6",
-        "illuminatech/array-factory": "^1.0.0"
+        "illuminate/database": "^6.0",
+        "illuminatech/array-factory": "^1.2.0"
     },
     "require-dev": {
-        "illuminate/events": "^5.6"
+        "illuminate/events": "^6.0",
+        "phpunit/phpunit": "^7.5|^8.0"
     },
     "autoload": {
         "psr-4": {
