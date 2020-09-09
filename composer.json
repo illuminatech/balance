@@ -15,12 +15,12 @@
         }
     ],
     "require": {
-        "illuminate/database": "^6.0 || ^7.0",
-        "illuminatech/array-factory": "^1.2.1"
+        "illuminate/database": "^6.0 || ^7.0 || ^8.0",
+        "illuminatech/array-factory": "^1.2.2"
     },
     "require-dev": {
-        "illuminate/events": "^6.0 || ^7.0",
-        "phpunit/phpunit": "^7.5 || ^8.0"
+        "illuminate/events": "*",
+        "phpunit/phpunit": "^7.5 || ^8.0 || ^9.3"
     },
     "autoload": {
         "psr-4": {

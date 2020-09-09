@@ -7,11 +7,11 @@
 
 namespace Illuminatech\Balance;
 
-use InvalidArgumentException;
-use Illuminate\Support\Carbon;
 use Illuminate\Contracts\Events\Dispatcher;
-use Illuminatech\Balance\Events\TransactionCreated;
+use Illuminate\Support\Carbon;
 use Illuminatech\Balance\Events\CreatingTransaction;
+use Illuminatech\Balance\Events\TransactionCreated;
+use InvalidArgumentException;
 
 /**
  * Balance is a base class for the balance managers.

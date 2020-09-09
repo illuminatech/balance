@@ -7,9 +7,9 @@
 
 namespace Illuminatech\Balance;
 
-use Illuminatech\ArrayFactory\Factory;
-use Illuminate\Support\ServiceProvider;
 use Illuminate\Contracts\Events\Dispatcher;
+use Illuminate\Support\ServiceProvider;
+use Illuminatech\ArrayFactory\Factory;
 
 /**
  * BalanceServiceProvider bootstraps balance manager to Laravel application.

@@ -7,9 +7,9 @@
 
 namespace Illuminatech\Balance\Facades;
 
-use Illuminatech\Balance\BalanceFake;
 use Illuminate\Support\Facades\Facade;
 use Illuminatech\Balance\BalanceContract;
+use Illuminatech\Balance\BalanceFake;
 
 /**
  * Balance is a facade for balance manager access.
