@@ -1,6 +1,12 @@
 Laravel Balance Accounting System Change Log
 ============================================
 
+1.2.0 Under Development
+-----------------------
+
+- Enh #6: Added ability for saving of the new balance amount per transaction (klimov-paul)
+
+
 1.1.2, September 9, 2020
 ------------------------
 
