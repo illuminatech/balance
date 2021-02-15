@@ -1,8 +1,8 @@
 Laravel Balance Accounting System Change Log
 ============================================
 
-1.2.0 Under Development
------------------------
+1.2.0, February 15, 2021
+------------------------
 
 - Enh #6: Added ability for saving of the new balance amount per transaction (klimov-paul)
 - Enh #7: `BalanceServiceProvider` has been made deferrable (klimov-paul)
