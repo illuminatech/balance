@@ -45,7 +45,7 @@ resource transferring from one location to another. For example: transferring go
 There 2 main terms related to the balance system:
 
  - account - virtual storage of the resources, which have some logical meaning.
- - transaction - represents actual transfer of the resources to or from particular account.
+ - transaction - represents actual transfer of the resources to or from the particular account.
 
 Lets assume we have a system, which provides virtual money balance for the user. Money on the balance can be used for the
 goods purchasing, user can top up his balance via some payment gateway. In such example, each user should have 3 virtual
@@ -151,7 +151,7 @@ use Illuminatech\Balance\Facades\Balance;
 Balance::decrease($accountId, 100); // remove 100 credits from account
 ```
 
-> Tip: actually, method `decrease()` is redundant, you can call `increase()` with negative amount in order to achieve same result.
+> Tip: actually, method `decrease()` is redundant, you can call `increase()` with negative amount in order to achieve the same result.
 
 It is unlikely you will use plain `increase()` and `decrease()` methods in your application. In most cases there is a need
 to **transfer** money from one account to another at once. Method `\Illuminatech\Balance\BalanceContract::transfer()` can be
@@ -184,7 +184,7 @@ use Illuminatech\Balance\Facades\Balance;
 Balance::revert($transactionId);
 ```
 
-This method will not remove original transaction, but create new one, which compensates it.
+This method will not remove original transaction, but create a new one, which compensates it.
 
 
 ## Querying accounts <span id="querying-accounts"></span>
@@ -243,7 +243,7 @@ echo Balance::calculateBalance($toAccount); // outputs: 100
 
 However, calculating current balance each time you need it, is not efficient. Thus you can specify an attribute of account
 entity, which will be used to store current account balance. This can be done via `\Illuminatech\Balance\Balance::$accountBalanceAttribute`.
-Each time balance manager performs a transaction it will update this attribute accordingly:
+Each time balance manager performs a transaction, it will update this attribute accordingly:
 
 ```php
 <?php
@@ -314,6 +314,40 @@ which will store all extra parameters, which have no matching column, in seriali
 
 > Note: watch for the keys you use in transaction data: make sure they do not conflict with columns, which are
   reserved for other purposes, like primary keys.
+
+
+## Saving balance amount per transaction <span id="saving-balance-amount-per-transaction"></span>
+
+There is a common accounting (bookkeeping) practice to record new balance amount per each performed transaction.
+Such approach simplifies recreation of the balance transfers dynamics and search for possible errors.
+You can achieve such behavior by setting `\Illuminatech\Balance\Balance::$newBalanceAttribute` value with the name of
+transaction entity attribute, which should store account balance, which appears after this transaction has been performed.
+For example:
+
+```php
+<?php
+
+use Illuminate\Support\Facades\DB;
+use Illuminatech\Balance\Facades\Balance;
+
+$accountId = 1;
+
+$lastTransactionQuery = DB::table('balance_transactions')
+    ->where(['account_id' => $accountId])
+    ->orderBy('id', 'DESC');
+
+Balance::increase($accountId, 50); // assume this is first time accounts is affected
+$lastTransaction = $lastTransactionQuery->first();
+echo $lastTransaction->new_balance; // outputs: 50
+
+Balance::increase($accountId, 25);
+$lastTransaction = $lastTransactionQuery->first();
+echo $lastTransaction->new_balance; // outputs: 75
+
+Balance::decrease($accountId, 50);
+$lastTransaction = $lastTransactionQuery->first();
+echo $lastTransaction->new_balance; // outputs: 25
+```
 
 
 ## Events <span id="events"></span>

@@ -222,6 +222,7 @@ abstract class Balance implements BalanceContract
 
     /**
      * Finds the last transaction data for the given account.
+     * @since 1.2.0
      *
      * @param  mixed  $accountId balance account ID.
      * @return array|null transaction data, `null` - if not found.
