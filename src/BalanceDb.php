@@ -160,6 +160,25 @@ class BalanceDb extends BalanceDbTransaction
     /**
      * {@inheritdoc}
      */
+    protected function findLastTransaction($accountId)
+    {
+        $row = $this->connection->query()
+            ->from($this->transactionTable)
+            ->where([$this->accountLinkAttribute => $accountId])
+            ->orderBy($this->dateAttribute, 'DESC')
+            ->orderBy($this->transactionIdAttribute, 'DESC')
+            ->first();
+
+        if ($row === null) {
+            return null;
+        }
+
+        return $this->unserializeAttributes((array)$row);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     protected function createAccount($attributes)
     {
         return $this->connection->table($this->accountTable)->insertGetId($attributes);

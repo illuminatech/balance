@@ -39,6 +39,7 @@ class BalanceDbTest extends TestCase
             $table->timestamp('created_at');
             $table->unsignedInteger('account_id');
             $table->integer('amount');
+            $table->integer('new_balance')->nullable();
             $table->text('data')->nullable();
         });
     }
@@ -163,5 +164,26 @@ class BalanceDbTest extends TestCase
         );
         $transaction = $this->getLastTransaction();
         $this->assertStringContains('123456789', $transaction->data);
+    }
+
+    /**
+     * @depends testIncrease
+     */
+    public function testSaveNewBalance()
+    {
+        $manager = new BalanceDb($this->getConnection());
+        $manager->newBalanceAttribute = 'new_balance';
+
+        $manager->increase(1, 50);
+        $transaction = $this->getLastTransaction();
+        $this->assertEquals(50, $transaction->new_balance);
+
+        $manager->increase(1, 25);
+        $transaction = $this->getLastTransaction();
+        $this->assertEquals(75, $transaction->new_balance);
+
+        $manager->decrease(1, 50);
+        $transaction = $this->getLastTransaction();
+        $this->assertEquals(25, $transaction->new_balance);
     }
 }

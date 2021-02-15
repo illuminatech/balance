@@ -50,9 +50,15 @@ abstract class Balance implements BalanceContract
     public $extraAccountLinkAttribute;
 
     /**
-     * @var string name of the account entity attribute, which should store current balance value.
+     * @var string|null name of the account entity attribute, which should store current balance value.
      */
     public $accountBalanceAttribute;
+
+    /**
+     * @var string|null name of the transaction entity attribute, which should store new balance value.
+     * @since 1.2.0
+     */
+    public $newBalanceAttribute;
 
     /**
      * @var string name of the transaction entity attribute, which should store date.
@@ -103,6 +109,11 @@ abstract class Balance implements BalanceContract
         }
         $data[$this->amountAttribute] = $amount;
         $data[$this->accountLinkAttribute] = $accountId;
+
+        if ($this->newBalanceAttribute !== null && !isset($data[$this->newBalanceAttribute])) {
+            $lastTransaction = $this->findLastTransaction($accountId);
+            $data[$this->newBalanceAttribute] = ($lastTransaction === null) ? $amount : ($lastTransaction[$this->newBalanceAttribute] + $amount);
+        }
 
         $data = $this->beforeCreateTransaction($accountId, $data);
 
@@ -208,6 +219,14 @@ abstract class Balance implements BalanceContract
      * @return array|null transaction data, `null` - if not found.
      */
     abstract protected function findTransaction($id);
+
+    /**
+     * Finds the last transaction data for the given account.
+     *
+     * @param  mixed  $accountId balance account ID.
+     * @return array|null transaction data, `null` - if not found.
+     */
+    abstract protected function findLastTransaction($accountId);
 
     /**
      * Creates new account with given attributes.
