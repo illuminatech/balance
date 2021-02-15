@@ -119,4 +119,20 @@ class BalanceFake extends Balance
 
         return null;
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function findLastTransaction($accountId)
+    {
+        $accountTransactions = array_filter($this->transactions, function ($transaction) use ($accountId) {
+            return $transaction[$this->accountLinkAttribute] == $accountId;
+        });
+
+        if (empty($accountTransactions)) {
+            return null;
+        }
+
+        return end($accountTransactions);
+    }
 }
