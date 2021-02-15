@@ -8,6 +8,7 @@
 namespace Illuminatech\Balance;
 
 use Illuminate\Contracts\Events\Dispatcher;
+use Illuminate\Contracts\Support\DeferrableProvider;
 use Illuminate\Support\ServiceProvider;
 use Illuminatech\ArrayFactory\Factory;
 
@@ -20,13 +21,8 @@ use Illuminatech\ArrayFactory\Factory;
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 1.0
  */
-class BalanceServiceProvider extends ServiceProvider
+class BalanceServiceProvider extends ServiceProvider implements DeferrableProvider
 {
-    /**
-     * {@inheritdoc}
-     */
-    protected $defer = false;
-
     /**
      * {@inheritdoc}
      */
@@ -43,6 +39,16 @@ class BalanceServiceProvider extends ServiceProvider
 
             return $balance;
         });
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function provides()
+    {
+        return [
+            BalanceContract::class,
+        ];
     }
 
     /**
