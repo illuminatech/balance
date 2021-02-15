@@ -5,6 +5,7 @@ Laravel Balance Accounting System Change Log
 -----------------------
 
 - Enh #6: Added ability for saving of the new balance amount per transaction (klimov-paul)
+- Enh #7: `BalanceServiceProvider` has been made deferrable (klimov-paul)
 
 
 1.1.2, September 9, 2020
