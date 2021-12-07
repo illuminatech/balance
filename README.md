@@ -12,7 +12,7 @@ For license information check the [LICENSE](LICENSE.md)-file.
 
 [![Latest Stable Version](https://img.shields.io/packagist/v/illuminatech/balance.svg)](https://packagist.org/packages/illuminatech/balance)
 [![Total Downloads](https://img.shields.io/packagist/dt/illuminatech/balance.svg)](https://packagist.org/packages/illuminatech/balance)
-[![Build Status](https://travis-ci.org/illuminatech/balance.svg?branch=master)](https://travis-ci.org/illuminatech/balance)
+[![Build Status](https://github.com/illuminatech/balance/workflows/build/badge.svg)](https://github.com/illuminatech/balance/actions)
 
 
 Installation
