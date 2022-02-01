@@ -22,6 +22,20 @@ use Throwable;
 abstract class BalanceDbTransaction extends Balance
 {
     /**
+     * @var bool whether to wrap internal operations into a Database transaction.
+     * @since 1.3.0
+     */
+    public $dbTransactionEnabled = true;
+
+    /**
+     * @var bool whether to wrap internal operations into a Database transaction, even if Database transaction already started at related Database connection.
+     * If enabled - nested DB transaction (savepoint) will be created to wrap balance operations.
+     * If disabled - no DB transaction will be started in case related DB connection already holds opened DB transaction.
+     * @since 1.3.0
+     */
+    public $dbTransactionNestedEnabled = true;
+
+    /**
      * @var int internal transaction stack level.
      */
     private $dbTransactionLevel = 0;
@@ -31,14 +45,14 @@ abstract class BalanceDbTransaction extends Balance
      */
     public function increase($account, $amount, $data = [])
     {
-        $this->beginDbTransaction();
+        $this->incrementDbTransactionLevel();
         try {
             $result = parent::increase($account, $amount, $data);
-            $this->commitDbTransaction();
+            $this->decrementDbTransactionLevel();
 
             return $result;
         } catch (Throwable $e) {
-            $this->rollBackDbTransaction();
+            $this->decrementDbTransactionLevel(true);
             throw $e;
         }
     }
@@ -48,14 +62,14 @@ abstract class BalanceDbTransaction extends Balance
      */
     public function transfer($from, $to, $amount, $data = [])
     {
-        $this->beginDbTransaction();
+        $this->incrementDbTransactionLevel();
         try {
             $result = parent::transfer($from, $to, $amount, $data);
-            $this->commitDbTransaction();
+            $this->decrementDbTransactionLevel();
 
             return $result;
         } catch (Throwable $e) {
-            $this->rollBackDbTransaction();
+            $this->decrementDbTransactionLevel(true);
             throw $e;
         }
     }
@@ -73,7 +87,7 @@ abstract class BalanceDbTransaction extends Balance
 
             return $result;
         } catch (Throwable $e) {
-            $this->decrementDbTransactionLevel(false);
+            $this->decrementDbTransactionLevel(true);
             throw $e;
         }
     }
@@ -84,6 +98,10 @@ abstract class BalanceDbTransaction extends Balance
      */
     protected function incrementDbTransactionLevel()
     {
+        if (!$this->isDbTransactionAllowed()) {
+            return;
+        }
+
         if ($this->dbTransactionLevel === 0) {
             $this->beginDbTransaction();
         }
@@ -99,6 +117,10 @@ abstract class BalanceDbTransaction extends Balance
      */
     protected function decrementDbTransactionLevel($rollback = false)
     {
+        if (!$this->isDbTransactionAllowed()) {
+            return;
+        }
+
         $this->dbTransactionLevel--;
 
         if ($this->dbTransactionLevel === 0) {
@@ -108,6 +130,25 @@ abstract class BalanceDbTransaction extends Balance
                 $this->commitDbTransaction();
             }
         }
+    }
+
+    /**
+     * Checks whether Database transaction usage is allowed or not.
+     * @since 1.3.0
+     *
+     * @return bool whether DB transaction usage is allowed.
+     */
+    protected function isDbTransactionAllowed()
+    {
+        if (!$this->dbTransactionEnabled) {
+            return false;
+        }
+
+        if (!$this->dbTransactionNestedEnabled && $this->getDbTransactionLevel() > 0) {
+            return false;
+        }
+
+        return true;
     }
 
     /**
@@ -124,4 +165,12 @@ abstract class BalanceDbTransaction extends Balance
      * Rolls back current DB transaction.
      */
     abstract protected function rollBackDbTransaction();
+
+    /**
+     * Get the number of active DB transactions.
+     * @since 1.3.0
+     *
+     * @return int count of active DB transactions.
+     */
+    abstract protected function getDbTransactionLevel();
 }

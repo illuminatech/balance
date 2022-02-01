@@ -15,4 +15,6 @@ return [
     'extraAccountLinkAttribute' => 'extra_account_id',
     'dataAttribute' => 'data',
     //'newBalanceAttribute' => 'new_balance',
+    //'dbTransactionEnabled' => true,
+    //'dbTransactionNestedEnabled' => true,
 ];

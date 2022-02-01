@@ -249,4 +249,12 @@ class BalanceDb extends BalanceDbTransaction
     {
         $this->connection->rollBack();
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function getDbTransactionLevel()
+    {
+        return $this->connection->transactionLevel();
+    }
 }

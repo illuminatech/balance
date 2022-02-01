@@ -8,6 +8,13 @@ if you want to upgrade from version A to version C and there is
 version B between A and C, you need to following the instructions
 for both A and B.
 
+Upgrade from 1.2.0
+------------------
+
+* New abstract method `getDbTransactionLevel()` has been added to `\Illuminatech\Balance\BalanceDbTransaction` class.
+  Make sure you provide implementation for the new method in case you extend this class.
+
+
 Upgrade from 1.1.0
 ------------------
 

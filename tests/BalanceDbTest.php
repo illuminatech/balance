@@ -2,6 +2,8 @@
 
 namespace Illuminatech\Balance\Test;
 
+use Illuminate\Database\Events\TransactionBeginning;
+use Illuminate\Events\Dispatcher;
 use InvalidArgumentException;
 use Illuminatech\Balance\BalanceDb;
 use Illuminate\Database\Schema\Blueprint;
@@ -185,5 +187,68 @@ class BalanceDbTest extends TestCase
         $manager->decrease(1, 50);
         $transaction = $this->getLastTransaction();
         $this->assertEquals(25, $transaction->new_balance);
+    }
+
+    /**
+     * @depends testIncrease
+     */
+    public function testDbTransaction()
+    {
+        $db = $this->getConnection();
+        $manager = new BalanceDb($db);
+        $manager->dbTransactionEnabled = true;
+        $manager->dbTransactionNestedEnabled = true;
+
+        $db->beginTransaction();
+        $manager->increase(1, 50);
+        $db->rollBack();
+
+        $this->assertEquals(0, $db->table('balance_transactions')->count());
+    }
+
+    /**
+     * @depends testDbTransaction
+     */
+    public function testDisableDbTransaction()
+    {
+        $db = $this->getConnection();
+        $db->setEventDispatcher(new Dispatcher());
+
+        $transactionCount = 0;
+        $db->getEventDispatcher()->listen(TransactionBeginning::class, function (TransactionBeginning $event) use (&$transactionCount) {
+            $transactionCount++;
+        });
+
+        $manager = new BalanceDb($db);
+
+        $transactionCount = 0;
+        $manager->dbTransactionEnabled = true;
+        $manager->dbTransactionNestedEnabled = true;
+        $manager->increase(1, 50);
+        $this->assertEquals(1, $transactionCount);
+
+        $transactionCount = 0;
+        $manager->dbTransactionEnabled = true;
+        $manager->dbTransactionNestedEnabled = true;
+        $db->beginTransaction();
+        $manager->increase(1, 50);
+        $this->assertEquals(2, $transactionCount);
+        $db->rollBack();
+
+        $transactionCount = 0;
+        $manager->dbTransactionEnabled = false;
+        $manager->dbTransactionNestedEnabled = true;
+        $db->beginTransaction();
+        $manager->increase(1, 50);
+        $this->assertEquals(1, $transactionCount);
+        $db->rollBack();
+
+        $transactionCount = 0;
+        $manager->dbTransactionEnabled = true;
+        $manager->dbTransactionNestedEnabled = false;
+        $db->beginTransaction();
+        $manager->increase(1, 50);
+        $this->assertEquals(1, $transactionCount);
+        $db->rollBack();
     }
 }

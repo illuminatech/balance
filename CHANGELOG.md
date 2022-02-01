@@ -1,6 +1,12 @@
 Laravel Balance Accounting System Change Log
 ============================================
 
+1.3.0 Under Development
+-----------------------
+
+- Enh #8: Added ability to disable internal Database transaction usage (klimov-paul)
+
+
 1.2.0, February 15, 2021
 ------------------------
 
