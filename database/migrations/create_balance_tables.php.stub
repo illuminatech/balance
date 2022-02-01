@@ -19,10 +19,10 @@ class CreateBalanceTables extends Migration
     public function up()
     {
         Schema::create('balance_accounts', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->integer('balance')->default(0);
+            $table->id('id');
+            $table->bigInteger('balance')->default(0);
             $table->string('type')->index();
-            $table->unsignedInteger('user_id');
+            $table->unsignedBigInteger('user_id');
 
             $table->foreign('user_id')
                 ->references('id')
@@ -32,9 +32,9 @@ class CreateBalanceTables extends Migration
         });
 
         Schema::create('balance_transactions', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->unsignedInteger('account_id');
-            $table->unsignedInteger('extra_account_id')->nullable();
+            $table->id('id');
+            $table->unsignedBigInteger('account_id');
+            $table->unsignedBigInteger('extra_account_id')->nullable();
             $table->integer('amount');
             $table->json('data')->nullable();
             $table->timestamp('created_at');
