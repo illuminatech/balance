@@ -35,9 +35,9 @@ class TransactionCreated
     /**
      * Constructor.
      *
-     * @param  mixed  newly created transaction ID.
-     * @param  mixed  $accountId balance account ID.
-     * @param  array  $data extra data, which should be associated with the transaction.
+     * @param mixed newly created transaction ID.
+     * @param mixed $accountId balance account ID.
+     * @param array $data extra data, which should be associated with the transaction.
      */
     public function __construct($transactionId, $accountId, array $data = [])
     {

@@ -18,9 +18,9 @@ interface BalanceContract
     /**
      * Increases account current balance ('debit' operation).
      *
-     * @param  array|mixed  $account  account ID or filter condition.
-     * @param  int|float  $amount amount.
-     * @param  array  $data extra data, which should be associated with the transaction
+     * @param array|mixed $account  account ID or filter condition.
+     * @param int|float $amount amount.
+     * @param array $data extra data, which should be associated with the transaction
      * @return mixed transaction ID.
      */
     public function increase($account, $amount, $data = []);
@@ -28,9 +28,9 @@ interface BalanceContract
     /**
      * Decreases account current balance ('credit' operation).
      *
-     * @param  array|mixed  $account account ID or filter condition.
-     * @param  int|float  $amount amount.
-     * @param  array  $data extra data, which should be associated with the transaction.
+     * @param array|mixed $account account ID or filter condition.
+     * @param int|float $amount amount.
+     * @param array $data extra data, which should be associated with the transaction.
      * @return mixed transaction ID.
      */
     public function decrease($account, $amount, $data = []);
@@ -38,10 +38,10 @@ interface BalanceContract
     /**
      * Transfers amount from one account to the other one.
      *
-     * @param  array|mixed  $from account ID or filter condition.
-     * @param  array|mixed  $to account ID or filter condition.
-     * @param  int|float  $amount amount.
-     * @param  array  $data extra data, which should be associated with the transaction.
+     * @param array|mixed $from account ID or filter condition.
+     * @param array|mixed $to account ID or filter condition.
+     * @param int|float $amount amount.
+     * @param array $data extra data, which should be associated with the transaction.
      * @return array list of created transaction IDs.
      */
     public function transfer($from, $to, $amount, $data = []);
@@ -52,8 +52,8 @@ interface BalanceContract
      * If transaction has been created via {@see transfer()} method, 2 transactions will be created affecting both
      * accounts used at {@see transfer()}.
      *
-     * @param  mixed  $transactionId ID of the transaction to be reverted.
-     * @param  array  $data extra transaction data
+     * @param mixed $transactionId ID of the transaction to be reverted.
+     * @param array $data extra transaction data
      * @return array|mixed transaction ID or list of transaction IDs.
      */
     public function revert($transactionId, $data = []);
@@ -61,7 +61,7 @@ interface BalanceContract
     /**
      * Calculates current account balance summarizing all related transactions.
      *
-     * @param  array|mixed  $account account ID or filter condition.
+     * @param array|mixed $account account ID or filter condition.
      * @return int|float current balance.
      */
     public function calculateBalance($account);

@@ -25,8 +25,8 @@ class TestCase extends \PHPUnit\Framework\TestCase
             $db = new Manager;
 
             $db->addConnection([
-                'driver'    => 'sqlite',
-                'database'  => ':memory:',
+                'driver' => 'sqlite',
+                'database' => ':memory:',
             ]);
 
             $db->setAsGlobal();

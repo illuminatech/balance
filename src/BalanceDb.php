@@ -29,16 +29,16 @@ use Illuminate\Database\Connection;
  *
  * ```php
  * Schema::create('balance_accounts', function (Blueprint $table) {
- *     $table->increments('id');
- *     $table->integer('balance')->default(0);
+ *     $table->id('id');
+ *     $table->bigInteger('balance')->default(0);
  *     // ...
  * });
  *
  * Schema::create('balance_transactions', function (Blueprint $table) {
- *     $table->increments('id');
+ *     $table->id('id');
  *     $table->timestamp('created_at');
- *     $table->unsignedInteger('account_id');
- *     $table->unsignedInteger('extra_account_id');
+ *     $table->unsignedBigInteger('account_id');
+ *     $table->unsignedBigInteger('extra_account_id');
  *     $table->integer('amount');
  *     $table->text('data')->nullable();
  *     // ...
@@ -94,7 +94,7 @@ class BalanceDb extends BalanceDbTransaction
     /**
      * Constructor.
      *
-     * @param  \Illuminate\Database\Connection  $connection DB connection to be used.
+     * @param \Illuminate\Database\Connection $connection DB connection to be used.
      */
     public function __construct(Connection $connection)
     {
@@ -110,7 +110,7 @@ class BalanceDb extends BalanceDbTransaction
     }
 
     /**
-     * @param  \Illuminate\Database\Connection  $connection  DB connection to be used.
+     * @param \Illuminate\Database\Connection $connection  DB connection to be used.
      * @return static self reference.
      */
     public function setConnection(Connection $connection)

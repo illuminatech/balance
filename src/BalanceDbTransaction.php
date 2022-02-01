@@ -14,7 +14,7 @@ use Throwable;
  *
  * While wrapping all balance operations into transaction, this class ensures such transactions to be not nested.
  *
- * @see Balance
+ * @see \Illuminatech\Balance\Balance
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 1.0
@@ -95,7 +95,7 @@ abstract class BalanceDbTransaction extends Balance
      * Decrements internal counter of transaction level.
      * Ends current transaction with commit or rollback, if counter becomes zero.
      *
-     * @param  bool  $rollback whether to perform rollback instead of commit.
+     * @param bool $rollback whether to perform rollback instead of commit.
      */
     protected function decrementDbTransactionLevel($rollback = false)
     {

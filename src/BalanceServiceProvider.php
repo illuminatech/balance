@@ -76,14 +76,14 @@ class BalanceServiceProvider extends ServiceProvider implements DeferrableProvid
         }
 
         $this->publishes([
-            __DIR__ . '/../config/balance.php' => $this->app->make('path.config').DIRECTORY_SEPARATOR.'balance.php',
+            __DIR__ . '/../config/balance.php' => $this->app->make('path.config') . DIRECTORY_SEPARATOR . 'balance.php',
         ], 'config');
 
-        if (! class_exists(\CreateBalanceTables::class)) {
+        if (!class_exists(\CreateBalanceTables::class)) {
             $timestamp = date('Y_m_d_His', time());
 
             $this->publishes([
-                __DIR__.'/../database/migrations/create_balance_tables.php.stub' => $this->app->databasePath().'/migrations/'.$timestamp.'_create_balance_tables.php',
+                __DIR__.'/../database/migrations/create_balance_tables.php.stub' => $this->app->databasePath() . '/migrations/' . $timestamp . '_create_balance_tables.php',
             ], 'migrations');
         }
     }

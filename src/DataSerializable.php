@@ -11,9 +11,9 @@ namespace Illuminatech\Balance;
  * DataSerializable provides ability to serialize extra attributes into the single field.
  *
  * It may be useful using data storage with static data schema, like relational database.
- * This trait supposed to be used inside descendant of {@see Balance}.
+ * This trait supposed to be used inside descendant of {@see \Illuminatech\Balance\Balance}.
  *
- * @mixin Balance
+ * @mixin \Illuminatech\Balance\Balance
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 1.0
@@ -28,8 +28,8 @@ trait DataSerializable
     /**
      * Processes attributes to be saved in persistent storage, serializing the ones not allowed for direct storage.
      *
-     * @param  array  $attributes raw attributes to be processed.
-     * @param  array  $allowedAttributes list of attribute names, which are allowed to be saved in persistent stage.
+     * @param array $attributes raw attributes to be processed.
+     * @param array $allowedAttributes list of attribute names, which are allowed to be saved in persistent stage.
      * @return array actual attributes.
      */
     protected function serializeAttributes(array $attributes, array $allowedAttributes)
@@ -59,7 +59,7 @@ trait DataSerializable
      * Processes the raw entity attributes from the persistent storage, converting serialized data into
      * actual attributes list.
      *
-     * @param  array  $attributes raw attribute values from persistent storage.
+     * @param array $attributes raw attribute values from persistent storage.
      * @return array actual attribute values
      */
     protected function unserializeAttributes(array $attributes): array
@@ -82,7 +82,7 @@ trait DataSerializable
     /**
      * Serializes array value into a string.
      *
-     * @param  array  $value
+     * @param array $value
      * @return string
      */
     protected function serialize(array $value): string
@@ -93,7 +93,7 @@ trait DataSerializable
     /**
      * Unserializes value from string.
      *
-     * @param  string  $value
+     * @param string $value
      * @return array
      */
     protected function unserialize(string $value): array

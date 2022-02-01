@@ -29,15 +29,15 @@ class BalanceDbTest extends TestCase
     protected function createSchema()
     {
         $this->getSchemaBuilder()->create('balance_accounts', function (Blueprint $table) {
-            $table->increments('id');
-            $table->unsignedInteger('user_id');
-            $table->integer('balance')->default(0);
+            $table->id('id');
+            $table->unsignedBigInteger('user_id');
+            $table->bigInteger('balance')->default(0);
         });
 
         $this->getSchemaBuilder()->create('balance_transactions', function (Blueprint $table) {
-            $table->increments('id');
+            $table->id('id');
             $table->timestamp('created_at');
-            $table->unsignedInteger('account_id');
+            $table->unsignedBigInteger('account_id');
             $table->integer('amount');
             $table->integer('new_balance')->nullable();
             $table->text('data')->nullable();

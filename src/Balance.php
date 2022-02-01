@@ -79,7 +79,7 @@ abstract class Balance implements BalanceContract
 
 
     /**
-     * @param  Dispatcher  $dispatcher
+     * @param \Illuminate\Events\Dispatcher $dispatcher
      * @return static self reference.
      */
     public function setEventDispatcher(Dispatcher $dispatcher): self
@@ -90,7 +90,7 @@ abstract class Balance implements BalanceContract
     }
 
     /**
-     * @return Dispatcher|null event dispatcher instance, `null` - if not available.
+     * @return \Illuminate\Events\Dispatcher|null event dispatcher instance, `null` - if not available.
      */
     public function getEventDispatcher()
     {
