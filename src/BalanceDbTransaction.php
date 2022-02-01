@@ -33,7 +33,7 @@ abstract class BalanceDbTransaction extends Balance
      * If disabled - no DB transaction will be started in case related DB connection already holds opened DB transaction.
      * @since 1.3.0
      */
-    public $dbTransactionNestedEnabled = true;
+    public $dbTransactionNestedEnabled = false;
 
     /**
      * @var int internal transaction stack level.
