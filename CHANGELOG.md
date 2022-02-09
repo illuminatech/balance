@@ -5,6 +5,7 @@ Laravel Balance Accounting System Change Log
 -----------------------
 
 - Enh #8: Added ability to disable internal Database transaction usage (klimov-paul)
+- Enh: Added support for "illuminate/database" 9.0 (klimov-paul)
 
 
 1.2.0, February 15, 2021
