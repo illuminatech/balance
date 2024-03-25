@@ -15,12 +15,12 @@
         }
     ],
     "require": {
-        "illuminate/database": "^6.0 || ^7.0 || ^8.0 || ^9.0 || ^10.0",
-        "illuminatech/array-factory": "^1.2.4"
+        "illuminate/database": "^6.0 || ^7.0 || ^8.0 || ^9.0 || ^10.0 || ^11.0",
+        "illuminatech/array-factory": "^1.2.5"
     },
     "require-dev": {
         "illuminate/events": "*",
-        "phpunit/phpunit": "^7.5 || ^8.0 || ^9.3 || ^10.0.7"
+        "phpunit/phpunit": "^7.5 || ^8.0 || ^9.3 || ^10.5"
     },
     "autoload": {
         "psr-4": {

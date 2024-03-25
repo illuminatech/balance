@@ -1,6 +1,12 @@
 Laravel Balance Accounting System Change Log
 ============================================
 
+1.3.2 Under Development
+-----------------------
+
+- Enh #14: Added support for "illuminate/database" 11.0 (klimov-paul)
+
+
 1.3.1, February 24, 2023
 ------------------------
 
